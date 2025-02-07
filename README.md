@@ -97,7 +97,7 @@ npm install
 - Add your Firebase API keys in .env
 
 # Start the React Native app
-npx react-native run-android  # For Android
+npm run android  # For Android
 
 ```
 ---
