@@ -411,8 +411,6 @@ const ChatRoomScreen = ({ userName }) => {
   const [inputMessage, setInputMessage] = useState("");
   const [user, setUserName] = useState("Guest");
   const flatListRef = useRef(null); // Ref for FlatList
-  const [networkState, setNetworkState] = useState(null);
-  const [isOnline, setIsOnline] = useState(false);
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -428,98 +426,33 @@ const ChatRoomScreen = ({ userName }) => {
     };
     fetchUserName();
 
-    // Network state subscription
-    const unsubscribeNetInfo = NetInfo.addEventListener((state) => {
-      setNetworkState(state);
-      setIsOnline(state.isConnected && state.isInternetReachable);
-    });
-
-    return () => {
-      unsubscribeNetInfo();
-    };
-  }, []);
-
-  useEffect(() => {
-    let ws;
-
     const connectToWebSocket = async () => {
-      if (networkState?.type === "wifi" && isOnline) {
-        try {
-          // Close existing connection if any
-          if (socket) {
-            socket.close();
-            setSocket(null);
-          }
+      const state = await NetInfo.fetch();
+      console.log(state.type);
+      if (state.type === "wifi") {
+        const ws = new WebSocket(SERVER_URL);
 
-          ws = new WebSocket(SERVER_URL);
+        ws.onopen = () => {
+          console.log("Connected to WebSocket server");
+        };
 
-          ws.onopen = () => {
-            console.log("Connected to WebSocket server");
-            // Sync offline messages when reconnecting
-            // syncLocalMessages();
-          };
+        ws.onmessage = (event) => {
+          const oldMsg = JSON.parse(event.data);
+          console.log(oldMsg);
+          console.log(messages);
+          setMessages((prev) => [...prev, oldMsg]);
+        };
+        ws.onerror = (error) => console.error("WebSocket Error:", error);
+        ws.onclose = () => console.log("Disconnected from WebSocket");
 
-          ws.onmessage = (event) => {
-            const message = JSON.parse(event.data);
-            let found = false;
-            messages.forEach((msg) => {
-              console.log(msg.timestamp);
-              if (msg.timestamp == message.timestamp) {
-                found = true;
-              }
-            });
-            if (!found) {
-              setMessages((prev) => [...prev, message]);
-            }
-          };
-
-          ws.onerror = (error) => {
-            console.log("WebSocket Error:", error);
-            handleConnectionError();
-          };
-
-          ws.onclose = () => {
-            console.log("Disconnected from WebSocket");
-            handleConnectionClose();
-          };
-
-          setSocket(ws);
-        } catch (error) {
-          console.error("WebSocket connection failed:", error);
-        }
+        setSocket(ws);
       } else {
-        console.log("Using Firebase instead");
-        //syncLocalMessages(); // Sync any pending messages
+        console.log("Not connected to Wi-Fi, WebSocket unavailable");
       }
     };
 
-    const handleConnectionError = () => {
-      // Fallback to Firebase
-      if (socket) {
-        socket.close();
-        setSocket(null);
-      }
-
-      //syncLocalMessages();
-    };
-
-    const handleConnectionClose = () => {
-      // Attempt reconnect after delay
-      setTimeout(() => {
-        if (networkState?.type === "wifi" && isOnline) {
-          connectToWebSocket();
-        }
-      }, 5000);
-    };
     connectToWebSocket();
-
-    return () => {
-      if (socket) {
-        socket.close();
-        setSocket(null);
-      }
-    };
-  }, [networkState, isOnline]);
+  }, []);
 
   useEffect(() => {
     if (flatListRef.current) {

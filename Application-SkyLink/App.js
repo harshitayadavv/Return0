@@ -5,9 +5,10 @@ import { FontAwesome5, MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 // Import screens from the screens folder
 import HomeScreen from "./screens/HomeScreen";
-import ChatRoom from "./screens/ChatRoom";
+import ChatRoomScreen from "./screens/ChatRoomScreen";
 import PassTimeScreen from "./screens/PassTimeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import ChatRoom from "./screens/ChatRoom";
 
 const Tab = createBottomTabNavigator();
 
@@ -31,7 +32,16 @@ export default function App() {
           }}
         />
         <Tab.Screen
-          name="Chat Room"
+          name="OfflineRoom"
+          component={ChatRoomScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <MaterialIcons name="feedback" size={24} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="OnlineRoom"
           component={ChatRoom}
           options={{
             tabBarIcon: ({ color }) => (
