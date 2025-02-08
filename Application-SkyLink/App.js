@@ -5,7 +5,7 @@ import { FontAwesome5, MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 // Import screens from the screens folder
 import HomeScreen from "./screens/HomeScreen";
-import ChatRoomScreen from "./screens/ChatRoomScreen";
+import ChatRoom from "./screens/ChatRoom";
 import PassTimeScreen from "./screens/PassTimeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 
@@ -21,33 +21,41 @@ export default function App() {
           tabBarInactiveTintColor: "gray",
         }}
       >
-        <Tab.Screen 
-          name="Home" 
-          component={HomeScreen} 
-          options={{ 
-            tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} /> 
-          }} 
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <FontAwesome5 name="home" size={24} color={color} />
+            ),
+          }}
         />
-        <Tab.Screen 
-          name="Chat Room" 
-          component={ChatRoomScreen} 
-          options={{ 
-            tabBarIcon: ({ color }) => <MaterialIcons name="chat" size={24} color={color} /> 
-          }} 
+        <Tab.Screen
+          name="Chat Room"
+          component={ChatRoom}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <MaterialIcons name="chat" size={24} color={color} />
+            ),
+          }}
         />
-        <Tab.Screen 
-          name="PassTime" 
-          component={PassTimeScreen} 
-          options={{ 
-            tabBarIcon: ({ color }) => <Ionicons name="game-controller" size={24} color={color} /> 
-          }} 
+        <Tab.Screen
+          name="PassTime"
+          component={PassTimeScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="game-controller" size={24} color={color} />
+            ),
+          }}
         />
-        <Tab.Screen 
-          name="Profile" 
-          component={ProfileScreen} 
-          options={{ 
-            tabBarIcon: ({ color }) => <FontAwesome5 name="user-alt" size={24} color={color} /> 
-          }} 
+        <Tab.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <FontAwesome5 name="user-alt" size={24} color={color} />
+            ),
+          }}
         />
       </Tab.Navigator>
     </NavigationContainer>
