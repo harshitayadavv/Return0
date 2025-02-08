@@ -46,7 +46,7 @@ Skylink addresses these challenges by providing:
 ✅ **AI-Powered Moderation** to prevent spam & abuse  
 ✅ **Flight Notifications** for real-time updates  
 ✅ **Privacy-Focused Nickname-Based Login**  
-✅ **Cross-Platform Support** (React Native + Firebase)
+✅ **Cross-Platform Support** 
 
 ---
 
@@ -58,12 +58,12 @@ Skylink addresses these challenges by providing:
 **Frontend:** React Native, TailwindCSS  
 **Backend:** Firebase (Authentication, Database, Cloud Functions)  
 **AI Moderation:** PyTorch, BERT Model, Gemini API  
-**Offline Messaging:** Peer-to-Peer Communication (Local Network/Bluetooth)  
+**Offline Messaging:** Peer-to-Peer Communication (Local Network)  
 
 ---
 
 ## 👨‍💻 Team Members
-- **Harshita Yadav** - UI/UX, Researcher
+- **Harshita Yadav** - UI/UX Designer , Researcher
 - **Ishan Bagra** - Frontend Developer
 - **Vipul Dixit** - Backend Developer
 - **Jai Taneja** - AI/ML Developer
@@ -88,7 +88,7 @@ Skylink addresses these challenges by providing:
 ```sh
 # Clone the repository
 git clone https://github.com/your-repo/skylink.git
-cd skylink
+cd Application-SkyLink
 
 # Install dependencies
 npm install
@@ -97,9 +97,8 @@ npm install
 - Add your Firebase API keys in .env
 
 # Start the React Native app
-npx react-native run-android  # For Android
-o r 
-npx react-native run-ios       # For iOS
+npm run android  # For Android
+
 ```
 ---
 
