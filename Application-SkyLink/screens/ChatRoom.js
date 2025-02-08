@@ -539,6 +539,7 @@ const ChatRoom = ({ userName }) => {
           socket.send(JSON.stringify(newMessage));
         }
         const { error } = await supabase.from("messages").insert(newMessage);
+        console.log(error);
         if (error) await storeMessageLocally(newMessage);
       } else {
         await storeMessageLocally(newMessage);
