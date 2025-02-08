@@ -422,6 +422,18 @@ const ChatRoom = ({ userName }) => {
 
   // Load messages from cache and Supabase
   useEffect(() => {
+    const fetchUserName = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem("userName");
+        if (storedData) {
+          const { userName } = JSON.parse(storedData);
+          setUserName(userName);
+        }
+      } catch (error) {
+        console.error("Error fetching user name", error);
+      }
+    };
+    fetchUserName();
     const initializeChat = async () => {
       // Load cached messages
       const cachedMessages = await AsyncStorage.getItem("cachedMessages");
@@ -551,106 +563,100 @@ const ChatRoom = ({ userName }) => {
   return (
     <View style={{ flex: 1, padding: 20 }}>
       <FlatList
-        ref={flatListRef}
+        ref={flatListRef} // Assign ref to FlatList
         data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ChatMessage item={item} user={user} />}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
+        keyExtractor={(item) => item.timestamp.toString()} // Ensure unique keys
+        renderItem={({ item }) => (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginVertical: 5,
+              alignSelf:
+                item.nickname === user
+                  ? "flex-end"
+                  : item.nickname === "SAARTHI"
+                  ? "center"
+                  : "flex-start",
+            }}
+          >
+            {item.nickname !== user && item.nickname !== "SAARTHI" && (
+              <Image
+                source={item.profileImg}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  marginRight: 10,
+                }}
+              />
+            )}
+            <View
+              style={{
+                backgroundColor:
+                  item.nickname === "SAARTHI"
+                    ? "#FFF4D1"
+                    : item.nickname === "CREW"
+                    ? "#f29ec8"
+                    : item.nickname === user
+                    ? "#ADD8E6"
+                    : "#E5E5EA",
+                padding: 10,
+                borderRadius: 15,
+                maxWidth: "70%",
+                borderColor:
+                  item.nickname === "SAARTHI" ? "#FFD700" : "transparent",
+                borderWidth: item.nickname === "SAARTHI" ? 1 : 0,
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color:
+                    item.nickname === "SAARTHI"
+                      ? "#DAA520"
+                      : item.nickname === "CREW"
+                      ? "#8B0000"
+                      : "#000",
+                }}
+              >
+                {item.nickname}
+              </Text>
+              <Text>{item.text}</Text>
+            </View>
+          </View>
+        )}
+        onContentSizeChange={() =>
+          flatListRef.current.scrollToEnd({ animated: true })
+        }
+        onLayout={() => flatListRef.current.scrollToEnd({ animated: true })}
       />
-
-      <MessageInput
-        inputMessage={inputMessage}
-        setInputMessage={setInputMessage}
-        sendMessage={sendMessage}
-      />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginVertical: 10,
+        }}
+      >
+        <TextInput
+          style={{
+            flex: 1,
+            borderWidth: 1,
+            padding: 10,
+            borderRadius: 10,
+            fontSize: 16,
+            marginRight: 10,
+          }}
+          placeholder="Type your message..."
+          value={inputMessage}
+          onChangeText={setInputMessage}
+        />
+        <TouchableOpacity onPress={sendMessage} style={{ padding: 10 }}>
+          <Icon name="paper-plane" size={30} color="#007AFF" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
-};
-
-const ChatMessage = ({ item, user }) => (
-  <View style={messageStyles.container(item, user)}>
-    {item.nickname !== user && item.nickname !== "SAARTHI" && (
-      <Image source={item.profileImg} style={messageStyles.avatar} />
-    )}
-    <View style={messageStyles.bubble(item, user)}>
-      <Text style={messageStyles.nickname(item)}>{item.nickname}</Text>
-      <Text>{item.text}</Text>
-    </View>
-  </View>
-);
-
-const MessageInput = ({ inputMessage, setInputMessage, sendMessage }) => (
-  <View style={inputStyles.container}>
-    <TextInput
-      style={inputStyles.field}
-      placeholder="Type your message..."
-      value={inputMessage}
-      onChangeText={setInputMessage}
-    />
-    <TouchableOpacity onPress={sendMessage}>
-      <Icon name="paper-plane" size={30} color="#007AFF" />
-    </TouchableOpacity>
-  </View>
-);
-
-// Style objects
-const messageStyles = {
-  container: (item, user) => ({
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 5,
-    alignSelf: item.nickname === user ? "flex-end" : "flex-start",
-  }),
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  bubble: (item) => ({
-    backgroundColor: getBubbleColor(item.nickname),
-    padding: 10,
-    borderRadius: 15,
-    maxWidth: "70%",
-  }),
-  nickname: (item) => ({
-    fontWeight: "bold",
-    color: getNicknameColor(item.nickname),
-  }),
-};
-
-const inputStyles = {
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  field: {
-    flex: 1,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 10,
-    marginRight: 10,
-  },
-};
-
-// Helper functions
-const getBubbleColor = (nickname) => {
-  const colors = {
-    SAARTHI: "#FFF4D1",
-    CREW: "#f29ec8",
-    default: "#E5E5EA",
-  };
-  return colors[nickname] || colors.default;
-};
-
-const getNicknameColor = (nickname) => {
-  const colors = {
-    SAARTHI: "#DAA520",
-    CREW: "#8B0000",
-    default: "#000",
-  };
-  return colors[nickname] || colors.default;
 };
 
 export default ChatRoom;
